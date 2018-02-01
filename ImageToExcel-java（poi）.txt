@@ -1,0 +1,33 @@
+用JAVA实现Excel做图
+
+思路：将Excel每个格子看为一像素点，填充对应的颜色。
+
+准备工作：
+1，下载第三方API。
+  Apache POI （ http://poi.apache.org/index.html）
+2，获得POI自带颜色的RGB值
+  手动解决办法：参考下列文章（https://www.cnblogs.com/xy2401/p/3295965.html）
+  输出颜色列表，用mac自带的小工具获得每一种颜色的RGB值和索引值
+  将所得颜色的RGB值作为三元数组存入一个List中备用
+
+绘图开始
+步骤1:获取目标图片的RGB值存入一个二维数组
+     ⭐️BufferedImage，getRGB()；
+       getRGB()沿Height方向扫描获取图片信息
+步骤2：去掉重复的RGB值并通过简单的匹配运算得到与原本颜色最接近的POI自带颜色的索引值
+     ⭐️匹配算法：将获得的RGB值与准工工作2中的得到的List的每一项通过下列算式进行比较 
+       del = sqrt(delR^2 + delG^2 + delB^2)
+       获得Del最小的时List的下标视为所求的索引值
+       p.s. poi自带的索引值并不是从0开始的连续整数，所以对得到的List的下标需要进行
+       数学处理
+步骤3：将所得索引值按坐标写入建好的Excel文档（XSSFWorkbook）
+     ⭐️HSSF只能创建后缀名为.xls文件，XSSF只能创建xlsx文件，因为列数多本次用XSSF
+       还有需要注意的是poi是先生成行（图片的高）再生成单元格（图片的高*宽）。
+       放入cell(横坐标i，纵坐标j)的值是应该通过步骤1获得的二维数组的转置矩阵的值
+       poi[i][j] = RGB[j][i]
+步骤4：根据cell的颜色索引值填入颜色
+     ⭐️CellStyle新建超过64000后会报错，不过poi自带的颜色索引值只有47个，遍历
+       颜色索引值来给cell填色就不会产生错误
+步骤5：输出Excel文件
+
+
