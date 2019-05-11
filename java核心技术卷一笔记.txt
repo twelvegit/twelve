@@ -1,0 +1,5 @@
+第十章
+Java Web Start 发布计算器应用程序
+1）编译程序时
+javaws.jar的路径必须手动添加在指令中
+javac -classpath .:[javaws.jar包的路径]/JAVA_HOME的路径/lib/javaws.jar [计算器应用程序的源代码.java]webstart/*.java
